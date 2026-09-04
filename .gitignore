@@ -1,3 +1,13 @@
+# Xcode / iOS
+*.xcodeproj
+xcuserdata/
+DerivedData/
+*.xcworkspace/xcuserdata/
+.build/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
 # Logs
 logs
 *.log
