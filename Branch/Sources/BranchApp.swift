@@ -26,7 +26,7 @@ struct BranchApp: App {
                 fatalError("Failed to create ModelContainer even after resetting the store: \(error)")
             }
         }
-        SampleDataSeeder.seedIfNeeded(context: container.mainContext)
+        AvailabilityMaintenance.ensureUpcomingAvailability(context: container.mainContext)
         NotificationManager.requestAuthorizationIfNeeded()
     }
 

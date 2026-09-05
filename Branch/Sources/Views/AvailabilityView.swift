@@ -44,7 +44,7 @@ struct AvailabilityView: View {
             .background(Theme.background)
             .navigationTitle("Availability")
             .onAppear {
-                SampleDataSeeder.ensureUpcomingAvailability(context: context)
+                AvailabilityMaintenance.ensureUpcomingAvailability(context: context)
             }
         }
     }
