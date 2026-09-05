@@ -18,6 +18,7 @@ struct TargetFormView: View {
     @State private var unit = ""
     @State private var hasDeadline = false
     @State private var deadline = Date()
+    @State private var showingDeleteConfirmation = false
 
     private var isEditing: Bool {
         if case .edit = mode { return true }
@@ -43,6 +44,25 @@ struct TargetFormView: View {
                     Toggle("Deadline", isOn: $hasDeadline)
                     if hasDeadline {
                         DatePicker("Deadline", selection: $deadline, displayedComponents: .date)
+                    }
+                }
+
+                if case .edit(let target) = mode {
+                    Section {
+                        Button("Delete Target", role: .destructive) {
+                            showingDeleteConfirmation = true
+                        }
+                    }
+                    .confirmationDialog(
+                        "Delete this target?",
+                        isPresented: $showingDeleteConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Delete", role: .destructive) {
+                            context.delete(target)
+                            try? context.save()
+                            dismiss()
+                        }
                     }
                 }
             }

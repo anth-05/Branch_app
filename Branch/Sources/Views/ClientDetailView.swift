@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 
 struct ClientDetailView: View {
+    @Environment(\.dismiss) private var dismiss
     @Bindable var client: Client
     @State private var showingEditClient = false
     @State private var showingAddTask = false
@@ -76,7 +77,7 @@ struct ClientDetailView: View {
             }
         }
         .sheet(isPresented: $showingEditClient) {
-            ClientFormView(mode: .edit(client))
+            ClientFormView(mode: .edit(client), onDelete: { dismiss() })
         }
         .sheet(isPresented: $showingAddTask) {
             TaskFormView(mode: .add(presetClient: client))

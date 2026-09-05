@@ -11,6 +11,7 @@ struct ClientFormView: View {
     @Environment(\.dismiss) private var dismiss
 
     let mode: Mode
+    var onDelete: (() -> Void)? = nil
 
     @State private var companyName = ""
     @State private var contactPerson = ""
@@ -20,6 +21,7 @@ struct ClientFormView: View {
     @State private var notes = ""
     @State private var logoSystemImage = "building.2.fill"
     @State private var logoTint = "green"
+    @State private var showingDeleteConfirmation = false
 
     private static let icons = [
         "building.2.fill", "camera.aperture", "film.fill", "bag.fill",
@@ -63,6 +65,23 @@ struct ClientFormView: View {
                     Picker("Color", selection: $logoTint) {
                         ForEach(Self.tints, id: \.self) { tint in
                             Text(tint.capitalized).tag(tint)
+                        }
+                    }
+                }
+
+                if case .edit = mode {
+                    Section {
+                        Button("Delete Client", role: .destructive) {
+                            showingDeleteConfirmation = true
+                        }
+                    }
+                    .confirmationDialog(
+                        "Delete this client? Their tasks and events will remain but become unassigned.",
+                        isPresented: $showingDeleteConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Delete", role: .destructive) {
+                            deleteClient()
                         }
                     }
                 }
@@ -120,6 +139,14 @@ struct ClientFormView: View {
         }
         try? context.save()
         dismiss()
+    }
+
+    private func deleteClient() {
+        guard case .edit(let client) = mode else { return }
+        context.delete(client)
+        try? context.save()
+        dismiss()
+        onDelete?()
     }
 }
 

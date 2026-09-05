@@ -54,7 +54,9 @@ struct TasksView: View {
 
     private func deleteTasks(at offsets: IndexSet) {
         for index in offsets {
-            context.delete(visibleTasks[index])
+            let task = visibleTasks[index]
+            NotificationManager.cancelReminder(for: task)
+            context.delete(task)
         }
         try? context.save()
     }

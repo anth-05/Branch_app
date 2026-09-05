@@ -17,6 +17,7 @@ struct EventFormView: View {
     @State private var date = Date()
     @State private var notes = ""
     @State private var selectedClient: Client?
+    @State private var showingDeleteConfirmation = false
 
     private var isEditing: Bool {
         if case .edit = mode { return true }
@@ -43,6 +44,25 @@ struct EventFormView: View {
                 Section("Notes") {
                     TextField("Notes", text: $notes, axis: .vertical)
                         .lineLimit(3...6)
+                }
+
+                if case .edit(let event) = mode {
+                    Section {
+                        Button("Delete Event", role: .destructive) {
+                            showingDeleteConfirmation = true
+                        }
+                    }
+                    .confirmationDialog(
+                        "Delete this event?",
+                        isPresented: $showingDeleteConfirmation,
+                        titleVisibility: .visible
+                    ) {
+                        Button("Delete", role: .destructive) {
+                            context.delete(event)
+                            try? context.save()
+                            dismiss()
+                        }
+                    }
                 }
             }
             .navigationTitle(isEditing ? "Edit Event" : "New Event")
